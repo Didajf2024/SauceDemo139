@@ -1,6 +1,7 @@
 using System;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using TechTalk.SpecFlow;
 using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
@@ -11,19 +12,19 @@ namespace MyNamespace
     public class StepDefinitions
     {
         private readonly ScenarioContext _scenarioContext;
-        private IWebDriver driver;//  objeto do selenium
+        private IWebDriver driver; // objeto do Selenium
+
         public StepDefinitions(ScenarioContext scenarioContext)
         {
             _scenarioContext = scenarioContext;
         }
 
-
         [BeforeScenario]
         public void SetUp()
         {
-            //Instanciando o ChromeDriver atraves do WebDriverManager
+            // Instanciando o ChromeDriver através do WebDriverManager
             new DriverManager().SetUpDriver(new ChromeConfig());
-            driver = new ChromeDriver();// instancio o selenium como Chrome
+            driver = new ChromeDriver(); // instanciou o Selenium como Chrome
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(10000);
             driver.Manage().Window.Maximize();
         }
@@ -31,63 +32,79 @@ namespace MyNamespace
         [AfterScenario]
         public void TearDown()
         {
-            driver.Quit(); // encerrou o selenium
+            driver.Quit(); // encerrou o Selenium
         }
 
 
-
-        [Given(@"que acesso a pagina inicial do site")]
+        [Given(@"que acesso a página inicial do site")]
         public void DadoQueAcessoAPaginaInicialDoSite()
         {
-            _scenarioContext.Pending();
+            driver.Navigate().GoToUrl("https://www.saucedemo.com/");
         }
 
-        [When(@"preencho o usuario como ""(.*)""")]
-        public void QuandoPreenchoOUsuarioComo(string p0)
+        [When(@"preencho o usuário como ""(.*)""")]
+        public void preenchoousuariocomo(string standard_user)
         {
-            _scenarioContext.Pending();
+            driver.FindElement(By.Id("user-name")).SendKeys(standard_user);
         }
 
         [When(@"a senha ""(.*)"" e clico no botao Login")]
-        public void QuandoASenhaEClicoNoBotaoLogin(string p0)
+        public void QuandoASenhaEClicoNoBotaoLogin(string password)
         {
-            _scenarioContext.Pending();
+            driver.FindElement(By.Id("password")).SendKeys(password);
+            driver.FindElement(By.Id("login-button")).Click();
         }
 
         [When(@"adiciono o produto ""(.*)"" ao carrinho")]
-        public void QuandoAdicionoOProdutoAoCarrinho(string p0)
+        public void QuandoAdicionoOProdutoAoCarrinho(string product)
         {
-            _scenarioContext.Pending();
+           String productSelector = "add-to-cart-" + product.ToLower().Replace(" ","-");
+           Console.WriteLine($"Seletor de Produto = {productSelector}");
+           driver.FindElement(By.Id(productSelector)).Click();
+
+           // id da mochila:  add-to-cart-sauce-labs-backpack
+           // id da lanterna: add-to-cart-sauce-labs-bike-light
+           // O nome do produto vem do arquivo. feature = Sauce Labs blabla
+           // O texto vem com maiusculas e o id em minuscula e com hifens
+           // Sauce Labs Backpack --> ToLower() --> sauce labs backpack
+
         }
 
         [When(@"clico no icone do carrinho de compras")]
         public void QuandoClicoNoIconeDoCarrinhoDeCompras()
         {
-            _scenarioContext.Pending();
+           driver.FindElement(By.Id("shopping_cart_container")).Click();
         }
 
-        [Then(@"exibe ""(.*)"" no titulo da sacao")]
-        public void EntaoExibeNoTituloDaSacao(string products0)
+        [Then(@"exibe ""(.*)"" no titulo da secao")]
+        public void EntaoExibeNoTituloDaSecao(string title)
         {
-            _scenarioContext.Pending();
+            // Espera explicita pelo elemento span.title ser carregado na página
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(3000));
+            wait.Until(d => driver.FindElement(By.CssSelector("span.title")).Displayed);
+            Assert.That(driver.FindElement(By.CssSelector("span.title")).Text,
+                                           Is.EqualTo(title));
         }
 
         [Then(@"exibe a pagina do carrinho com a quantidade ""(.*)""")]
-        public void EntaoExibeAPaginaDoCarrinhoComAQuantidade(string p0)
+        public void EntaoExibeAPaginaDoCarrinhoComAQuantidade(string quantity)
         {
-            _scenarioContext.Pending();
+            Assert.That(driver.FindElement(By.CssSelector("div.cart_quantity")).Text,
+                                           Is.EqualTo(quantity));
         }
 
         [Then(@"nome do produto ""(.*)""")]
-        public void EntaoNomeDoProduto(string p0)
+        public void EntaoNomeDoProduto(string product)
         {
-            _scenarioContext.Pending();
+            Assert.That(driver.FindElement(By.CssSelector("div.inventory_item_name")).Text,
+                                           Is.EqualTo(product));
         }
 
         [Then(@"o preco como ""(.*)""")]
-        public void EntaoOPrecoComo(string p0)
+        public void EntaoOPrecoComo(string price)
         {
-            _scenarioContext.Pending();
+            Assert.That(driver.FindElement(By.CssSelector("div.inventory_item_price")).Text,
+                                           Is.EqualTo(price));
         }
     }
 }

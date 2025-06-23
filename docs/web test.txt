@@ -7,9 +7,13 @@ Nivel 1
 Nivel 2
 
 - Selenium com SpecFlow: BDD / Ghekin / Cucumber
-    2 arquivos:
+    2 tipos arquivos:
     - .feature--> descrição / criterio de aceito
-    -.cs --> passos da automação
+    - .cs --> passos da automação
 
 
     - selenium com page objects / page factory
+    3 tipos de arquivos
+    - .cs --> mapeamento dos elementos de cada página
+    - .feature--> descrição / criterio de aceito
+    - .cs --> passos da automação

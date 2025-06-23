@@ -27,4 +27,3 @@ Funcionalidade: Selecionar Produto na Loja
     | usuario         | senha          | tituloSecao | produto                 | quantidade | preco    |
     | "standard_user" | "secret_sauce" | "Products"  | "Sauce Labs Backpack"   | "1"        | "$29.99" |
     | "visual_user"   | "secret_sauce" | "Products"  | "Sauce Labs Bike Light" | "1"        | "$9.99"  |
-1:05
